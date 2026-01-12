@@ -1,0 +1,180 @@
+{
+    "api_name": "OAS Example Single Project",
+    "framework_version": "v3",
+    "doc_version": "v1",
+    "url_path": "oas_example_single_project",
+    "children": [
+        {
+            "url_path": "developers_guide",
+            "display_name": "Developer's Guide",
+            "children": [
+                {
+                    "url_path": "overview",
+                    "display_name": "Overview",
+                    "source": "oas_example_single_project/v1/developers_guide/overview.rst"
+                },
+                {
+                    "url_path": "basics",
+                    "display_name": "API Basics",
+                    "source": "oas_example_single_project/v1/developers_guide/api_basics/basics.rst",
+                    "children": [
+                        {
+                            "url_path": "translation",
+                            "display_name": "Translate Models",
+                            "source": "oas_example_single_project/v1/developers_guide/api_basics/translation.rst"
+                        },
+                        {
+                            "url_path": "preparation",
+                            "display_name": "Prepare Models for Online Viewing",
+                            "source": "oas_example_single_project/v1/developers_guide/api_basics/prepare_viewing.rst"
+                        },
+                        {
+                            "url_path": "metadata_extraction",
+                            "display_name": "Extract Metadata",
+                            "source": "oas_example_single_project/v1/developers_guide/api_basics/metadata_extraction.rst"
+                        },
+                        {
+                            "url_path": "geometry_extraction",
+                            "display_name": "Extract Geometry",
+                            "source": "oas_example_single_project/v1/developers_guide/api_basics/geometry_extraction.rst"
+                        },
+                        {
+                            "url_path": "thumbnail_generation",
+                            "display_name": "Extract Thumbnails",
+                            "source": "oas_example_single_project/v1/developers_guide/api_basics/thumbnail_generation.rst"
+                        }
+                    ]
+                },
+                {
+                    "url_path": "error_handling",
+                    "display_name": "Error Handling",
+                    "source": "oas_example_single_project/v1/developers_guide/error_handling.rst"
+                },
+                {
+                    "url_path": "rate-limiting",
+                    "display_name": "Rate Limits",
+                    "children": [
+                        {
+                            "url_path": "aps-rate-limits",
+                            "display_name": "APS Rate Limits and Quotas",
+                            "source": "oas_example_single_project/v1/developers_guide/forge-rate-limits.rst"
+                        },
+                        {
+                            "url_path": "md-rate-limits",
+                            "display_name": "Model Derivative Rate Limits and Quotas",
+                            "source": "oas_example_single_project/v1/developers_guide/md-rate-limits.rst"
+                        }
+                    ]
+                },
+                {
+                    "url_path": "webhooks",
+                    "display_name": "Webhooks",
+                    "source": "oas_example_single_project/v1/developers_guide/webhooks.rst"
+                },
+                {
+                    "url_path": "contacts",
+                    "display_name": "Contact & Repo Information",
+                    "source": "oas_example_single_project/v1/developers_guide/contacts.rst",
+                    "is_internal": "true"
+                }
+            ]
+        },
+        {
+            "url_path": "tutorials",
+            "display_name": "Step-by-Step Tutorials",
+            "children": [
+                {
+                    "url_path": "tutorial-template",
+                    "display_name": "Upload Files to BIM 360 Document Management (BIM 360 Tutorial Template)",
+                    "source": "oas_example_single_project/v1/tutorials/tutorial_template.rst"
+                },
+                {
+                    "url_path": "tutorial-template2",
+                    "display_name": "Extract Metadata from a Source File (Multi-topic Tutorial Template)",
+                    "children": [
+                        {
+                            "url_path": "about-this-tutorial",
+                            "display_name": "About this Tutorial",
+                            "source": "oas_example_single_project/v1/tutorials/tutorial_05/about-this-tutorial.rst"
+                        },
+                        {
+                            "url_path": "task1-authenticate",
+                            "display_name": "Task 1 - Obtain an Access Token",
+                            "source": "oas_example_single_project/v1/tutorials/tutorial_05/task1-authenticate.rst"
+                        },
+                        {
+                            "url_path": "task2-upload_source_file_to_oss",
+                            "display_name": "Task 2 - Upload Source File to OSS",
+                            "source": "oas_example_single_project/v1/tutorials/tutorial_05/task2-upload_source_file_to_oss.rst"
+                        },
+                        {
+                            "url_path": "task3-translate-source-file",
+                            "display_name": "Task 3 - Translate to SVF2",
+                            "source": "oas_example_single_project/v1/tutorials/tutorial_05/task3-translate-source-file.rst"
+                        },
+                        {
+                            "url_path": "task4-display_model",
+                            "display_name": "Task 4 - Extract Metadata",
+                            "source": "oas_example_single_project/v1/tutorials/tutorial_05/task4-display_metadata.rst"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "url_path": "code_samples",
+            "display_name": "Code Samples & Blog Posts",
+            "children": [
+                {
+                    "url_path": "code_samples",
+                    "display_name": "Code Samples",
+                    "source": "oas_example_single_project/v1/code_samples/code_samples.rst"
+                },
+                {
+                    "url_path": "blog_posts",
+                    "display_name": "Blog Posts",
+                    "source": "oas_example_single_project/v1/code_samples/blog_posts.rst"
+                }
+            ]
+        },
+        {
+            "url_path": "reference",
+            "display_name": "API Reference",
+            "children": [
+                {
+                    "url_path": "quick_reference",
+                    "display_name": "HTTP Reference",
+                    "source": "oas_example_single_project/v1/reference/http/quick_reference.rst",
+                    "children": [
+                        {
+                            "display_name": "Manually Created",
+                            "children": [
+                                {
+                                    "url_path": "endpoint_template",
+                                    "display_name": "Endpoint Template",
+                                    "source": "oas_example_single_project/v1/reference/http/rst-template/Endpoint_Template.rst"
+                                }
+                            ]
+                        },
+                        {
+                            "url_path": "http",
+                            "display_name": "Automatically Created",
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "display_name": "Change History",
+            "url_path": "change_history",
+            "children": [
+                {
+                    "url_path": "changelog",
+                    "display_name": "Changelog",
+                    "source": "oas_example_single_project/_change_history/changelog.rst"
+                }
+            ]
+        }
+    ]
+}
