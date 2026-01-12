@@ -1,0 +1,237 @@
+---
+title: "Task 4 – Extract Metadata"
+description: "Retrieve metadata and properties from the translated model"
+---
+
+In order to extract metadata, you must wait until the translation job is done. You can either periodically check the manifest status or set up a webhook.
+
+## Key Learnings
+
+By the end of this task you will be able to:
+
+- Get a list of Viewables contained within a model
+- Use the metadata GUID of the Viewable to retrieve properties of objects
+
+## Endpoints Used
+
+| Operation | HTTP Request | Description |
+|-----------|--------------|-------------|
+| **Fetch Manifest** | `GET {urn}/manifest` | Returns information about the derivatives of a source file |
+| **List Model Views** | `GET {urn}/metadata` | Returns the model view IDs for a model |
+| **Fetch Object Tree** | `GET {urn}/metadata/{modelGuid}` | Returns the hierarchical object tree |
+| **Fetch All Properties** | `GET {urn}/metadata/{modelGuid}/properties` | Returns all properties of objects |
+| **Fetch Specific Properties** | `POST {urn}/metadata/{modelGuid}/properties:query` | Returns specified properties of specified objects |
+
+## Step 1 - Check Translation Status
+
+Verify that the translation is complete by checking the manifest.
+
+**Request:**
+
+```bash
+curl -X GET \
+    'https://developer.api.autodesk.com/modelderivative/v2/designdata/<URL_SAFE_URN_OF_SOURCE_FILE>/manifest' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>'
+```
+
+Wait until `status` is `success`.
+
+## Step 2 - Retrieve List of Viewables
+
+Once the source file has been translated to SVF2, retrieve a list of model view (metadata) IDs.
+
+<Note>
+Revit files contain multiple model views, while Fusion 360 and Inventor models contain only a single model view.
+</Note>
+
+**Request:**
+
+```bash
+curl -X GET \
+    'https://developer.api.autodesk.com/modelderivative/v2/designdata/<URL_SAFE_URN_OF_SOURCE_FILE>/metadata' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>'
+```
+
+**Response:**
+
+```json
+{
+    "data": {
+        "type": "metadata",
+        "metadata": [
+            {
+                "name": "{3D}",
+                "role": "3d",
+                "guid": "6bfb4886-f2ee-9ccb-8db0-c5c170220c40"
+            },
+            {
+                "name": "A102 - Plans",
+                "role": "2d",
+                "guid": "abdacd31-f94c-e84f-9a58-4663e281d894"
+            }
+        ]
+    }
+}
+```
+
+Note the `guid` of the first Viewable named `{3D}`.
+
+## Step 3 - Get Object Hierarchy
+
+Use the Viewable GUID to get the object tree.
+
+**Request:**
+
+```bash
+curl -X GET \
+    'https://developer.api.autodesk.com/modelderivative/v2/designdata/<URL_SAFE_URN_OF_SOURCE_FILE>/metadata/<GUID_OF_VIEWABLE>' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>'
+```
+
+<Note>
+If extracting properties takes time, you may receive `{"result": "success"}`. This means the request was accepted but processing is still in progress. Retry the request.
+</Note>
+
+**Response:**
+
+```json
+{
+    "data": {
+        "type": "objects",
+        "objects": [
+            {
+                "objectid": 1,
+                "objects": [
+                    {
+                        "objectid": 161,
+                        "objects": [
+                            {
+                                "objectid": 5409,
+                                "name": "RPC Male"
+                            }
+                        ],
+                        "name": "Entourage"
+                    }
+                ],
+                "name": "Model"
+            }
+        ]
+    }
+}
+```
+
+## Step 4 - Get Object Hierarchy (Filtered)
+
+Filter the object tree by providing a root node `objectid`.
+
+**Request:**
+
+```bash
+curl -X GET \
+    'https://developer.api.autodesk.com/modelderivative/v2/designdata/<URL_SAFE_URN_OF_SOURCE_FILE>/metadata/<GUID_OF_VIEWABLE>?objectid=161' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>'
+```
+
+## Step 5 - Retrieve Properties of All Objects
+
+Get properties of all objects in a Viewable.
+
+**Request:**
+
+```bash
+curl -X GET \
+    'https://developer.api.autodesk.com/modelderivative/v2/designdata/<URL_SAFE_URN_OF_SOURCE_FILE>/metadata/<GUID_OF_VIEWABLE>/properties' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>'
+```
+
+**Response:**
+
+```json
+{
+    "data": {
+        "type": "properties",
+        "collection": [
+            {
+                "objectid": 435,
+                "name": "RPC Male",
+                "externalId": "5ba82f05-9759-4b6e-8b19-8f869f7ed622-000e919b",
+                "properties": {
+                    "Identity Data": {
+                        "Type Name": "Alex",
+                        "Mark": "",
+                        "Comments": ""
+                    },
+                    "Phasing": {
+                        "Phase Demolished": "None",
+                        "Phase Created": "Working Drawings"
+                    }
+                }
+            }
+        ]
+    }
+}
+```
+
+## Step 6 - Query Specific Properties
+
+For large models, query only the properties you need using the properties:query endpoint.
+
+**Request:**
+
+```bash
+curl -X POST \
+    'https://developer.api.autodesk.com/modelderivative/v2/designdata/<URL_SAFE_URN_OF_SOURCE_FILE>/metadata/<GUID_OF_VIEWABLE>/properties:query' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "query": {
+            "$prefix": ["name", "M_Pile-Steel"]
+        },
+        "fields": [
+            "objectid",
+            "name",
+            "externalId",
+            "properties.Dimensions"
+        ],
+        "pagination": {
+            "offset": 0,
+            "limit": 5
+        },
+        "payload": "text"
+    }'
+```
+
+**Response:**
+
+```json
+{
+    "pagination": {
+        "limit": 5,
+        "offset": 0,
+        "totalResults": 11
+    },
+    "data": {
+        "type": "properties",
+        "collection": [
+            {
+                "objectid": 577,
+                "name": "M_Pile-Steel Pipe",
+                "externalId": "656284ae-d84a-4c5c-ae16-d638fa151c7e-0007d1bf",
+                "properties": {
+                    "Dimensions": {
+                        "Elevation at Bottom": "-7102.000 mm",
+                        "Elevation at Top": "-950.000 mm",
+                        "Depth": "6000.000 mm",
+                        "Diameter": "300.000 mm"
+                    }
+                }
+            }
+        ]
+    }
+}
+```
+
+<Tip>
+Using the query endpoint with pagination and specific fields significantly reduces response size and bandwidth usage for large models.
+</Tip>
+

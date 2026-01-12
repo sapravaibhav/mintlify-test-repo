@@ -1,0 +1,101 @@
+---
+title: "Translate Models"
+description: "Translate models into multiple output formats"
+---
+
+The Model Derivative API lets you translate a model into several types of output file formats simultaneously. Regardless of how many derivatives are requested, or how many times the POST job endpoint is invoked, the Model Derivative service stores data about all the derivatives for that source model in the same manifest. Since data about each model's derivatives are stored in one manifest, you can locate information about any translation by parsing the manifest.
+
+See the tutorial on [Translate a Source File](/tutorials/tutorial-05/task3-translate) to get to know the workflow to translate models from one file format to another.
+
+## Translation Job Status
+
+To translate a model you must use `POST job`. A response of `success` means that the request is submitted correctly. After that the Model Derivative service initiates a translation job that runs in the background. This means that there is no need to halt the execution of your program while translation happens in the background. However, you either need to periodically check if the translation job is completed, or set up a webhook, which issues a callback once translation is done.
+
+You can check the status of a translation job by inspecting the manifest. You must use `GET :urn/manifest` to retrieve a manifest.
+
+## Example: Translation In-Progress
+
+The following example shows a manifest where the translation job is still in-progress:
+
+```json
+{
+    "urn": "URL_SAFE_URN_OF_SOURCE_FILE",
+    "derivatives": [
+        {
+            "hasThumbnail": "false",
+            "children": [
+                {
+                    "guid": "838255a4-5400-4083-a6c2-717eab0d3a85",
+                    "mime": "application/octet-stream",
+                    "role": "OBJ",
+                    "status": "success",
+                    "type": "resource",
+                    "urn": "urn:adsk.viewing:fs.file:.../box.obj"
+                }
+            ],
+            "name": "box.ipt",
+            "progress": "50% complete",
+            "outputType": "obj",
+            "status": "inprogress"
+        }
+    ],
+    "hasThumbnail": "false",
+    "progress": "50% complete",
+    "type": "manifest",
+    "region": "US",
+    "version": "1.0",
+    "status": "inprogress"
+}
+```
+
+<Note>
+Note the `status` field showing `inprogress` and `progress` showing `50% complete`.
+</Note>
+
+## Example: Translation Complete
+
+The following example shows a manifest where the translation job is complete:
+
+```json
+{
+    "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bWRfdHV0ZV8wMS9ib3guaXB0",
+    "derivatives": [
+        {
+            "hasThumbnail": "false",
+            "children": [
+                {
+                    "guid": "838255a4-5400-4083-a6c2-717eab0d3a85",
+                    "mime": "application/octet-stream",
+                    "role": "OBJ",
+                    "status": "success",
+                    "type": "resource",
+                    "urn": "urn:adsk.viewing:fs.file:.../box.obj"
+                },
+                {
+                    "guid": "3761150b-7b92-4dd0-a435-429ca696c893",
+                    "mime": "application/octet-stream",
+                    "role": "OBJ",
+                    "status": "success",
+                    "type": "resource",
+                    "urn": "urn:adsk.viewing:fs.file:.../box.mtl"
+                }
+            ],
+            "name": "box.ipt",
+            "progress": "complete",
+            "outputType": "obj",
+            "status": "success"
+        }
+    ],
+    "hasThumbnail": "false",
+    "progress": "complete",
+    "type": "manifest",
+    "region": "US",
+    "version": "1.0",
+    "status": "success"
+}
+```
+
+<Tip>
+When `status` is `success` and `progress` is `complete`, the translation job has finished successfully.
+</Tip>
+

@@ -1,0 +1,58 @@
+---
+title: "Webhooks"
+description: "Subscribe to events and receive notifications when data changes"
+---
+
+Webhooks allow your application to receive real-time notifications when specific events occur in the system. Instead of polling the API repeatedly, you can register a callback URL that will be called when relevant events happen.
+
+## How Webhooks Work
+
+<Steps>
+  <Step title="Register a Webhook">
+    Configure a webhook subscription with the events you want to monitor and your callback URL.
+  </Step>
+  <Step title="Event Occurs">
+    When a subscribed event happens (e.g., a file is uploaded, a translation completes), the system prepares a notification.
+  </Step>
+  <Step title="Receive Notification">
+    Your callback URL receives an HTTP POST request with details about the event.
+  </Step>
+  <Step title="Process the Event">
+    Your application processes the notification and takes appropriate action.
+  </Step>
+</Steps>
+
+## Data Management Webhook Events
+
+The following table shows a list of Data Management events that trigger webhooks:
+
+| Event Type | Description |
+|------------|-------------|
+| `dm.version.added` | A new version of an item was added |
+| `dm.version.modified` | A version was modified |
+| `dm.version.deleted` | A version was deleted |
+| `dm.folder.added` | A new folder was created |
+| `dm.folder.modified` | A folder was modified |
+| `dm.folder.deleted` | A folder was deleted |
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Verify Webhook Signatures">
+    Always verify the signature of incoming webhook requests to ensure they're authentic.
+  </Accordion>
+  <Accordion title="Respond Quickly">
+    Return a 2xx response as quickly as possible. Process the webhook data asynchronously if needed.
+  </Accordion>
+  <Accordion title="Handle Retries">
+    If your endpoint doesn't respond with a 2xx status, the webhook system may retry the delivery.
+  </Accordion>
+  <Accordion title="Implement Idempotency">
+    Design your webhook handler to handle duplicate deliveries gracefully.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+For detailed webhook setup instructions and a complete list of events, refer to the Webhooks API documentation.
+</Note>
+

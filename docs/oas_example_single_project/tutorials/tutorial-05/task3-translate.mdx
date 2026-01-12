@@ -1,0 +1,143 @@
+---
+title: "Task 3 – Translate to SVF2"
+description: "Translate the model to a viewer-friendly format"
+---
+
+For the server to extract metadata from a model, you must first translate the model to a viewer-friendly format. While this tutorial translates the model to SVF2, you can just as well translate it to SVF. The procedure to extract metadata is identical regardless of what format you translate to.
+
+## Key Learnings
+
+By the end of this task you will be able to:
+
+- Start a translation job
+- Check the status of a translation job
+
+## Endpoints Used
+
+| Operation | HTTP Request | Description |
+|-----------|--------------|-------------|
+| **Start Translation Job** | `POST /job` | Initiates an asynchronous process to translate a specified model to another format |
+| **Fetch Manifest** | `GET /{urn}/manifest` | Retrieves the manifest for the model specified by the `urn` URI parameter |
+
+## Step 1 - Start a Translation Job
+
+When you start a translation job, you specify the Base64-encoded URN of the source file and the desired output format.
+
+**Request:**
+
+```bash
+curl -X POST \
+    'https://developer.api.autodesk.com/modelderivative/v2/designdata/job' \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>' \
+    -H 'x-ads-force: true' \
+    -d '{
+        "input": {
+            "urn": "<BASE64_ENCODED_URN_OF_SOURCE_FILE>"
+        },
+        "output": {
+            "destination": {
+                "region": "us"
+            },
+            "formats": [
+                {
+                    "type": "svf2",
+                    "views": ["2d", "3d"]
+                }
+            ]
+        }
+    }'
+```
+
+**Response:**
+
+```json
+{
+    "result": "success",
+    "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6...",
+    "acceptedJobs": {
+        "output": {
+            "destination": { "region": "us" },
+            "formats": [
+                {
+                    "type": "svf2",
+                    "views": ["2d", "3d"]
+                }
+            ]
+        }
+    }
+}
+```
+
+<Note>
+Note down the value of `urn`. This is the URL safe Base64-encoded URN of the source file. Use this URN to check the status of the translation job.
+</Note>
+
+## Step 2 - Check Translation Status
+
+There are two ways to check the status of a translation job:
+
+1. **Webhooks**: Set up a webhook that notifies you when the job is done
+2. **Polling**: Periodically inspect the manifest
+
+For this tutorial, we'll poll the manifest. The `status` attribute reports:
+
+| Status | Meaning |
+|--------|---------|
+| `pending` | The job has been received and is pending processing |
+| `inprogress` | The job has started and is running |
+| `success` | The job has finished successfully |
+| `failed` | The translation has failed |
+| `timeout` | The translation has timed out |
+
+**Request:**
+
+```bash
+curl -X GET \
+    'https://developer.api.autodesk.com/modelderivative/v2/designdata/<URL_SAFE_URN_OF_SOURCE_FILE>/manifest' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>'
+```
+
+**Response (In Progress):**
+
+```json
+{
+    "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6...",
+    "derivatives": [
+        {
+            "hasThumbnail": "true",
+            "name": "rac_basic_sample_project.rvt",
+            "progress": "20% complete",
+            "outputType": "svf2",
+            "status": "inprogress"
+        }
+    ],
+    "progress": "20% complete",
+    "status": "inprogress"
+}
+```
+
+**Response (Complete):**
+
+```json
+{
+    "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6...",
+    "derivatives": [
+        {
+            "hasThumbnail": "true",
+            "name": "rac_basic_sample_project.rvt",
+            "progress": "complete",
+            "outputType": "svf2",
+            "status": "success"
+        }
+    ],
+    "hasThumbnail": "true",
+    "progress": "complete",
+    "status": "success"
+}
+```
+
+<Tip>
+Continue to the next task once `status` is `success` and `progress` is `complete`.
+</Tip>
+

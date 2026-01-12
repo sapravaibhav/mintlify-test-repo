@@ -1,0 +1,110 @@
+---
+title: "Changelog"
+description: "History of changes and updates to the API"
+---
+
+## Release Date: 2018-03-26
+
+**Version 2.0.17**
+
+### Added
+
+- Restore support for BIM 360 Docs folder in `PATCH projects/:project_id/folders/:folder_id` endpoint.
+- Create item support for BIM 360 Docs in `POST projects/:project_id/items` endpoint.
+- Create version support for BIM 360 Docs in `POST projects/:project_id/versions` endpoint.
+
+---
+
+## Release Date: 2018-03-08
+
+**Version 2.0.16**
+
+### Fixed
+
+- Issue with internal processing.
+
+---
+
+## Release Date: 2018-03-01
+
+**Version 2.0.15**
+
+### Added
+
+- Ability to create folders for BIM 360 Docs in `POST projects/:project_id/folders` endpoint.
+- Copy version support for BIM 360 Docs in `POST projects/:project_id/versions` endpoint.
+
+---
+
+## Release Date: 2018-02-09
+
+**Version 2.0.14**
+
+### Added
+
+- `reserved`, `reservedTime`, `reservedUserId`, `reservedUserName` attributes to all endpoints that return an Item entity.
+
+### Fixed
+
+- A360 Preview tab images are now loaded.
+- Issue with confusing icon state, when pressing the ESC key in the LMV window.
+
+---
+
+## Release Date: 2018-01-29
+
+**Version 2.0.13**
+
+### Added
+
+- Copy to folder support for BIM 360 Docs in `POST projects/:project_id/items` endpoint.
+
+### Fixed
+
+- Issue with `lastModifiedTimeRollup` attribute in Folder entity not complying with the ISO8601 format.
+
+### Removed
+
+- Empty sections from CHANGELOG, which occupied too much space.
+
+---
+
+## Release Date: 2018-08-10
+
+**Version 2.0.1**
+
+### Changed
+
+- The hubs object response now distinguishes between team hubs and personal hubs. Team hubs are represented by `hubs:autodesk.core:Hub` (which previously represented all hubs) and personal hubs are represented by `hubs:autodesk.a360:PersonalHub` (a new type).
+
+<Warning>
+The previous representation for all hubs (`hubs:autodesk.core:Hub`) now only represents team hubs. Any code that previously, explicitly checked for hubs will now only return team hubs, unless you update the code.
+</Warning>
+
+### Removed
+
+- Support for uploading of Fusion 360 Designs.
+
+---
+
+## Release Date: 2016-08-26
+
+**Version 2.0.0**
+
+### Added
+
+- Support for creating folders using `POST projects/:project_id/folders`.
+- Ability to modify metadata and core attributes of folders, items, and versions via PATCH.
+- Ability to create downloads of Fusion 360 Designs such as .f3z/.f3d files with `POST projects/:project_id/downloads`.
+
+### Changed
+
+- Creating folders, items, versions, and relationships now require an extension section that specifies the type and version of the respective type to be created.
+- The payload passed with a POST request to create folders, items, version, and relationships is now fully validated against the referenced schema.
+- Folders, items, and versions now expose an additional `/links` relationship.
+- Relationship links to thumbnails and manifests now point to the respective Model Derivative API endpoints.
+
+### Deprecated
+
+- Support for uploading of Fusion 360 Designs.
+

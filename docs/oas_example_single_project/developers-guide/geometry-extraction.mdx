@@ -1,0 +1,82 @@
+---
+title: "Extract Geometry"
+description: "Extract geometry from models as OBJ files"
+---
+
+You can use the Model Derivative API to select specific parts (objects) of a model and export their geometric representations as OBJ files.
+
+When you translate a model to the SVF format, the Model Derivative service extracts information about the objects within the model and writes that information to the manifest. You can use the endpoints that query metadata to obtain information required to identify these objects, from the manifest. Using this information you can use `POST job` to translate specified objects to the OBJ format.
+
+## Correlation of IDs in OBJ Files
+
+When you extract geometry, you'll work with object IDs from the object hierarchy. Here's an example object tree:
+
+```json
+{
+    "data": {
+        "type": "objects",
+        "objects": [
+            {
+                "objectid": 1,
+                "name": "Stapler",
+                "objects": [
+                    {
+                        "objectid": 2,
+                        "name": "Stapler",
+                        "objects": [
+                            {
+                                "objectid": 3,
+                                "name": "Bottom:1",
+                                "objects": [
+                                    {
+                                        "objectid": 4,
+                                        "name": "Bottom - Back:1",
+                                        "objects": [
+                                            {
+                                                "objectid": 5,
+                                                "name": "Solid1"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "objectid": 6,
+                                        "name": "Bottom - Front:1",
+                                        "objects": [
+                                            {
+                                                "objectid": 7,
+                                                "name": "Solid1"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
+
+## Understanding OBJ File Contents
+
+If you extract object 3, and you open the resulting OBJ file in a text editor, you'll see content like:
+
+<img src="/images/obj_file.png" alt="OBJ file content" />
+
+<Note>
+The `g Obj` value corresponds to the object IDs highlighted in the object tree. Note the absence of the IDs 3, 4, and 6 in the OBJ file. OBJ files contain only the IDs of **leaf nodes** of the object tree.
+</Note>
+
+## Key Points
+
+| Object Type | In OBJ File? |
+|-------------|--------------|
+| Leaf nodes (parts) | ✅ Yes - identified by objectid |
+| Parent nodes (assemblies) | ❌ No - not written to OBJ |
+
+<Warning>
+The object IDs 3, 4, and 6 represent parent nodes in the object tree and hence are not written to the OBJ file. Parts can be identified in the OBJ file by their object ID, but assemblies cannot.
+</Warning>
+

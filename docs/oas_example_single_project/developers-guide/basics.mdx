@@ -1,0 +1,39 @@
+---
+title: "API Basics"
+description: "Key concepts and terminology for using the API effectively"
+---
+
+The Model Derivative API gives you the ability to translate source files into output files (derivatives) of different formats. While translating, the Model Derivative logs information to a JSON file known as a manifest. The manifest contains information about the derivatives that are produced. You can use the manifest to access the derivatives, check the status of the translation job, and obtain information about the derivatives.
+
+The most common use of the Model Derivative API is to translate models to the SVF or SVF2 formats so that they can be displayed in a browser. See the tutorial [Prepare a File for the Viewer](/tutorials/tutorial-05/about-this-tutorial) for details. Also, the Model Derivative API is often used just to translate models from one format to another. You can also use the Model Derivative API to select parts/components of a model and export their geometric representations to OBJ files.
+
+## Key Terminology
+
+The following table defines important terms for the Model Derivative API:
+
+| Term | Definition |
+|------|------------|
+| **source file** | The model that is translated to other formats; sometimes called "seed file". For information about supported file formats, see the GET formats endpoint. |
+| **derivatives** | The translated output files |
+| **manifest** | A JSON file listing the derivatives produced by a translation job. It contains information such as the derivative type, the URN of the derivative, and the translation job status (how far translation has progressed) of each derivative. It also contains metadata about each derivative, which lets you identify individual objects within a model, their geometric representations, and associated properties. |
+
+## Related Topics
+
+<CardGroup cols={2}>
+  <Card title="Translate Models" icon="language" href="/developers-guide/translation">
+    Learn how to translate models to different formats.
+  </Card>
+  <Card title="Prepare for Viewing" icon="eye" href="/developers-guide/prepare-viewing">
+    Prepare models for online viewing with SVF/SVF2.
+  </Card>
+  <Card title="Extract Metadata" icon="database" href="/developers-guide/metadata-extraction">
+    Extract metadata from translated models.
+  </Card>
+  <Card title="Extract Geometry" icon="shapes" href="/developers-guide/geometry-extraction">
+    Extract geometry as OBJ files.
+  </Card>
+  <Card title="Extract Thumbnails" icon="image" href="/developers-guide/thumbnail-generation">
+    Generate thumbnails of models.
+  </Card>
+</CardGroup>
+

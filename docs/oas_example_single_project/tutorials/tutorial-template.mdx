@@ -1,0 +1,172 @@
+---
+title: "Upload Files to BIM 360 Document Management"
+description: "Step-by-step tutorial for uploading files to BIM 360"
+---
+
+This tutorial demonstrates how to upload files to BIM 360 Document Management. The steps include finding the ID of the folder where you want to upload the files, creating an empty storage object for the file, uploading the file to the storage object, creating the first version of the file, and, optionally, creating additional versions of the file.
+
+<Warning>
+You can upload any type of document to the BIM 360 Project Files folder or to a folder nested under the Project Files folder. However, you can only upload the following types of documents to the Plans folder or to a folder nested under the Plans folder: DWF, DWFX, DWG, IFC, PDF, RVT.
+</Warning>
+
+<Note>
+If you upload PDF files to the Plans folder, BIM 360 Docs splits the file into separate pages (sheets) and assigns a separate ID to each page. You need to manually review and publish the file in BIM 360 Docs.
+</Note>
+
+For more details about BIM 360 Document management, see the [Data Management API](/developers-guide/overview).
+
+## Before You Begin
+
+- [Register an app](/myapps), and select the Data Management and BIM 360 APIs.
+- Acquire a [3-legged OAuth token](/tutorials/tutorial-05/task1-authenticate) with `data:create`, `data:read`, and `data:write` scopes.
+- Verify that you have access to the relevant BIM 360 account, project, and folder.
+
+## Step 1: Find the Hub ID for the BIM 360 Account
+
+Find the hub ID for the BIM 360 account that contains the folder you want to upload the file to, by calling `GET hubs`.
+
+<Note>
+The BIM 360 account ID corresponds to a Data Management hub ID. To convert an account ID into a hub ID you need to add a **b.** prefix. For example, an account ID of `c8b0c73d-3ae9` translates to a hub ID of `b.c8b0c73d-3ae9`.
+</Note>
+
+**Request:**
+
+```bash
+curl -X GET -H "Authorization: Bearer nFRJxzCD8OOUr7hzBwbr06D76zAT" \
+  "https://developer.api.autodesk.com/project/v1/hubs"
+```
+
+**Response:**
+
+```json
+{
+  "jsonapi": { "version": "1.0" },
+  "data": [
+    {
+      "type": "hubs",
+      "id": "b.cGVyc29uYWw6cGUyOWNjZjMy",
+      "attributes": {
+        "name": "My First Account",
+        "extension": {
+          "type": "hubs:autodesk.bim360:Account",
+          "version": "1.0"
+        }
+      }
+    }
+  ]
+}
+```
+
+Find the hub (`data.name`), and note the hub ID - `b.cGVyc29uYWw6cGUyOWNjZjMy`.
+
+## Step 2: Find the Project ID
+
+Use the hub ID to call `GET hubs/:hub_id/projects` to get a list of all the projects in the hub.
+
+**Request:**
+
+```bash
+curl -X GET -H "Authorization: Bearer nFRJxzCD8OOUr7hzBwbr06D76zAT" \
+  "https://developer.api.autodesk.com/project/v1/hubs/b.cGVyc29uYWw6cGUyOWNjZjMy/projects"
+```
+
+**Response:**
+
+```json
+{
+  "jsonapi": { "version": "1.0" },
+  "data": [
+    {
+      "type": "projects",
+      "id": "b.cGVyc29uYWw6d2l",
+      "attributes": {
+        "name": "My First Project"
+      }
+    }
+  ]
+}
+```
+
+Note the project ID (`data.id`) - `b.cGVyc29uYWw6d2l`.
+
+## Step 3: Find the Folder ID
+
+Use the hub ID and project ID to call `GET hubs/:hub_id/projects/:project_id/topFolders`.
+
+**Request:**
+
+```bash
+curl -X GET -H "Authorization: Bearer nFRJxzCD8OOUr7hzBwbr06D76zAT" \
+  "https://developer.api.autodesk.com/project/v1/hubs/b.cGVyc29uYWw6cGUyOWNjZjMy/projects/b.cGVyc29uYWw6d2l/topFolders"
+```
+
+**Response:**
+
+```json
+{
+  "jsonapi": { "version": "1.0" },
+  "data": [
+    {
+      "type": "folders",
+      "id": "urn:adsk.wipprod:fs.folder:co.BJU3PTc4Sd2CmXM492XUiA",
+      "attributes": {
+        "name": "Project Files",
+        "displayName": "Project Files"
+      }
+    }
+  ]
+}
+```
+
+Note the folder ID - `urn:adsk.wipprod:fs.folder:co.BJU3PTc4Sd2CmXM492XUiA`.
+
+## Step 4: Find the Nested Folder ID (Optional)
+
+If you want to upload to a nested folder, call `GET projects/:project_id/folders/:folder_id/contents` repeatedly through the folder hierarchy.
+
+## Step 5: Create a Storage Object
+
+Create an empty storage object for the file in the folder using `POST projects/:project_id/storage`.
+
+**Request:**
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/vnd.api+json" \
+  -H "Authorization: Bearer nFRJxzCD8OOUr7hzBwbr06D76zAT" \
+  "https://developer.api.autodesk.com/data/v1/projects/b.cGVyc29uYWw6d2l/storage" \
+  -d '{
+    "jsonapi": { "version": "1.0" },
+    "data": {
+      "type": "objects",
+      "attributes": { "name": "My First File.jpg" },
+      "relationships": {
+        "target": {
+          "data": { "type": "folders", "id": "urn:adsk.wipprod:fs.folder:co.QneBBX7evT2JSrpeQXga0" }
+        }
+      }
+    }
+  }'
+```
+
+Note the object ID from the response.
+
+## Step 6: Upload the File
+
+Use `PUT buckets/:bucket_key/objects/:object_name` to upload the file.
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer nFRJxzCD8OOUr7hzBwbr06D76zAT" \
+  --data-binary @"D:\My First File.jpg" \
+  "https://developer.api.autodesk.com/oss/v2/buckets/wip.dm.prod/objects/2a6d61f2-49df-4d7b.jpg"
+```
+
+## Step 7: Create the First Version
+
+Use `POST projects/:project_id/items` to create the first version of the uploaded file.
+
+## Step 8: Create Additional Versions (Optional)
+
+To create additional versions, repeat steps 5-6 with the new file, then use `POST projects/:project_id/versions` with the item ID.
+

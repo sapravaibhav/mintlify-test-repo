@@ -1,0 +1,57 @@
+---
+title: "Quick Reference"
+description: "HTTP endpoint quick reference guide"
+---
+
+This page is meant for those who have a hazy idea of an endpoint or the operation, but cannot recall its name, or vice versa. Use `Ctrl/Cmd + F` to search for endpoints by keyword.
+
+## Company
+
+| Operation | Method + Endpoint |
+|-----------|-------------------|
+| Create a Company | `POST /companies` |
+| Fetch a Company | `GET /companies/{companyId}` |
+| Update a Company | `PUT /companies/{companyId}` |
+| Change Company Permissions | `PATCH /companies/{companyId}` |
+
+## GDPR
+
+| Operation | Method + Endpoint |
+|-----------|-------------------|
+| Check Status of a Process | `GET /gdpr/jobs/{jobId}` |
+| Delete a Namespace | `DELETE /gdpr/companies/{companyId}/namespaces/{namespaceId}` |
+
+## Namespaces
+
+| Operation | Method + Endpoint |
+|-----------|-------------------|
+| Fetch All Namespaces | `GET /companies/{companyId}/namespaces` |
+| Delete a Namespace | `DELETE /gdpr/companies/{companyId}/namespaces/{namespaceId}` |
+| Create a Namespace | `POST /{companyId}/namespaces` |
+| Fetch a Namespace | `GET /companies/{companyId}/namespaces/{namespaceId}` |
+| Update a Namespace | `PUT /companies/{companyId}/namespaces/{namespaceId}` |
+| Change Namespace Permissions | `PATCH /companies/{companyId}/namespaces/{namespaceId}` |
+
+## Schema
+
+| Operation | Method + Endpoint |
+|-----------|-------------------|
+| List Schema | `GET /companies/{companyId}/namespaces/{namespaceId}/schemas` |
+| Create a Published Schema | `POST /companies/{companyId}/namespaces/{namespaceId}/schemas` |
+| Create a Draft Schema | `POST /companies/{companyId}/namespaces/{namespaceId}/schemas/draft` |
+| List All Versions of a Schema | `GET /schemas/{schemaId}/versions` |
+| Fetch a Version of a Schema | `GET /schemas/{schemaVersionId}` |
+| Fetch Multiple Schemas | `GET /schemas:batch-get` |
+| Create a Batch of Published Schema | `POST /companies/{companyId}/namespaces/{namespaceId}/schemas-batch` |
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Endpoint Template" icon="file-code" href="/reference/endpoint-template">
+    See the endpoint documentation template.
+  </Card>
+  <Card title="Error Handling" icon="triangle-exclamation" href="/developers-guide/error-handling">
+    Learn about error handling.
+  </Card>
+</CardGroup>
+

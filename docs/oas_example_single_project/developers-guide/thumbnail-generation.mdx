@@ -1,0 +1,40 @@
+---
+title: "Extract Thumbnails"
+description: "Generate thumbnails of models in various sizes"
+---
+
+The Model Derivative API can be used to generate thumbnails of a model. You can generate three different-sized thumbnails:
+
+| Size | Dimensions |
+|------|------------|
+| Small | 100x100 |
+| Medium | 200x200 |
+| Large | 400x400 |
+
+## Workflow
+
+The following workflow describes how to generate thumbnails:
+
+<Steps>
+  <Step title="Start Translation Job">
+    Call `POST job` to generate the thumbnails. Set the output format type to `thumbnail`, and specify the thumbnail size.
+  </Step>
+  <Step title="Verify Translation Status">
+    Call `GET :urn/manifest` to verify whether the thumbnail generation is complete and the thumbnail is ready to be downloaded.
+  </Step>
+  <Step title="Get Thumbnail URN">
+    When the translation is complete, use the `GET :urn/manifest` endpoint to obtain the URN of the thumbnail.
+  </Step>
+  <Step title="Download Thumbnail">
+    Use the thumbnail URN to call `GET :urn/thumbnail` to download the thumbnail.
+  </Step>
+</Steps>
+
+## Related Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST job` | Start a translation job to generate thumbnails |
+| `GET :urn/manifest` | Check translation status and get thumbnail URN |
+| `GET :urn/thumbnail` | Download the generated thumbnail |
+

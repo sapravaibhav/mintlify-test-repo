@@ -1,0 +1,81 @@
+---
+title: "Model Derivative Rate Limits and Quotas"
+description: "Specific rate limits and quotas for the Model Derivative API"
+---
+
+The Model Derivative service observes a rate limit and a set of quotas to ensure that all clients get sufficient service and that runaway applications don't consume excessive resources. See [APS Rate Limits and Quotas](/developers-guide/aps-rate-limits) for general information.
+
+## Rate Limits
+
+Rate limits specify a maximum number of requests per minute.
+
+### Scope
+
+The Model Derivative service sets a separate rate limit for each application making requests (specified by client ID) per API endpoint.
+
+### Violation Notification
+
+If an application exceeds an endpoint's rate limit, the server returns an `HTTP 429` error.
+
+### Endpoint Rate Limits
+
+These rate limits apply to some of the Model Derivative API's endpoints:
+
+<Note>
+These rates are not service guarantees. In the uncommon case where total service use is too high across all clients, accepted request rates may drop until traffic subsides.
+</Note>
+
+| Method | Endpoint | Limit (requests/minute) |
+|--------|----------|------------------------|
+| POST | job | 500 |
+| GET | :urn/metadata/:guid/properties?forceget=true | 60 |
+| GET | :urn/metadata/:guid?forceget=true | 60 |
+
+## Quotas
+
+Model Derivative quotas limit resource consumption when using the Model Derivative service.
+
+### Scope
+
+Quotas are enforced individually for each Forge application making requests (specified by client ID) that uses the Model Derivative service, and are set per endpoint.
+
+### Endpoint Quotas
+
+| Method | Endpoint | Limit Description | Limit | Units | Notification |
+|--------|----------|-------------------|-------|-------|--------------|
+| GET | :urn/metadata/:guid/properties | Maximum download size for a request | 20 | MB | HTTP 413 response |
+| GET | :urn/metadata/:guid/properties?objectid={id} | Maximum size of property to query for an object | 300 | MB | HTTP 406 response |
+| GET | :urn/manifest/:derivativeurn | Maximum download size for derivativeurn ending with `.db` or `.sdb` | 256 | MB | HTTP 413 response |
+
+## Quota Violation Notifications
+
+The Model Derivative service reports quota violations using different HTTP error responses.
+
+### HTTP 413 "Request Entity Too Large"
+
+This response reports a quota violation that occurs when requesting a resource that's too large.
+
+**Example Response Header (413):**
+
+```
+HTTP/1.1 413 Request Entity Too Large
+Content-Type: application/json
+date: Fri, 03 Aug 2018 08:17:33 GMT
+x-ads-app-identifier=platform-viewing-2018.06.02.63.f1ad853-production
+x-ads-startup-time: Fri Aug 03 05:34:31 UTC 2018
+x-ads-duration: 126 ms
+x-ads-size: 529625314
+```
+
+**Example Response Body (413):**
+
+```json
+{
+  "diagnostic": "Please use the 'forceget' parameter to force querying the data."
+}
+```
+
+<Tip>
+If you receive a 413 error, try using the `forceget` parameter to force querying the data, or paginate your requests to reduce the response size.
+</Tip>
+

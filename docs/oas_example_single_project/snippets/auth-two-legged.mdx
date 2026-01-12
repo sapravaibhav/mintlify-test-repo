@@ -1,0 +1,48 @@
+This task produces a two-legged access token with a scope sufficient to authenticate the remaining tasks in this tutorial.
+
+## Key Learnings
+
+By the end of this task, you will know how to obtain a two-legged access token when the Client ID and Client Secret is known.
+
+## Endpoints Used
+
+| Operation | HTTP Request | Description |
+|-----------|--------------|-------------|
+| **Get Access Token** | `POST /token` | Returns an access token via a two-legged OAuth flow |
+
+## Step 1 - Register an App
+
+Follow the instructions in the tutorial [Create an App](/myapps). Make sure that the "Model Derivative API" and "Data Management API" are selected.
+
+## Step 2: Convert Client ID and Secret to Base64
+
+Concatenate your Client ID with the Client Secret and convert it to a Base64 encoded string:
+
+```
+<CLIENT_ID>:<CLIENT_SECRET>
+```
+
+## Step 3: Obtain an Access Token
+
+Call the `POST token` endpoint:
+
+```bash
+curl -v 'https://developer.api.autodesk.com/authentication/v2/token' \
+   -X 'POST' \
+   -H 'Content-Type: application/x-www-form-urlencoded' \
+   -H 'Accept: application/json' \
+   -H 'Authorization: Basic <BASE64_ENCODED_STRING>' \
+   -d 'grant_type=client_credentials' \
+   -d 'scope=data:write data:read bucket:create bucket:delete'
+```
+
+**Response:**
+
+```json
+{
+  "token_type": "Bearer",
+  "expires_in": 1799,
+  "access_token": "<YOUR_ACCESS_TOKEN>"
+}
+```
+

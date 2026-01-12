@@ -1,0 +1,44 @@
+---
+title: "Extract Metadata from a Source File"
+description: "Learn how to extract metadata from a translated model"
+---
+
+## About this Tutorial
+
+When you translate a Model into the SVF (or SVF2) format, the translation process extracts model views (Viewables) so that they can be displayed with the Viewer Library. Additionally, the translation process extracts metadata about the objects in the design. This tutorial demonstrates how to access the metadata that was extracted. This tutorial uses a Revit model, because Revit models contain a rich set of metadata.
+
+For more information about metadata that can be extracted from a manifest, and their significance, see the section on [Metadata Extraction](/developers-guide/metadata-extraction).
+
+## Postman Collection
+
+We also provide a [Postman](https://www.getpostman.com/) Collection containing the HTTP requests used in this tutorial. On the Postman Collection, requests are grouped by task. The group has the same name as the corresponding task in this tutorial.
+
+<Frame>
+  <img src="/images/tutorial_05/tutorial_05_forge_postman_menu_01.png" alt="Postman Collection Menu" />
+</Frame>
+
+Similarly, requests are named such that you can easily match a Step in this tutorial with the corresponding HTTP request in the Postman Collection.
+
+<Frame>
+  <img src="/images/tutorial_05/tutorial_05_forge_postman_menu_02.png" alt="Postman Request Names" />
+</Frame>
+
+The Postman Collection is hosted in a [GitHub repository](https://github.com/Autodesk-Forge/forge-tutorial-postman/tree/master/ModelDerivative_05), and is accompanied by a set of instructions.
+
+## Tutorial Tasks
+
+<CardGroup cols={2}>
+  <Card title="Task 1: Authenticate" icon="key" href="/tutorials/tutorial-05/task1-authenticate">
+    Obtain an access token.
+  </Card>
+  <Card title="Task 2: Upload File" icon="upload" href="/tutorials/tutorial-05/task2-upload">
+    Upload source file to OSS.
+  </Card>
+  <Card title="Task 3: Translate" icon="language" href="/tutorials/tutorial-05/task3-translate">
+    Translate the source file to SVF2.
+  </Card>
+  <Card title="Task 4: Extract Metadata" icon="database" href="/tutorials/tutorial-05/task4-metadata">
+    Extract metadata from the model.
+  </Card>
+</CardGroup>
+

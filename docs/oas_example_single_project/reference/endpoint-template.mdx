@@ -1,0 +1,117 @@
+---
+title: "Endpoint Template"
+description: "Template for documenting API endpoints"
+---
+
+This page serves as a template for documenting API endpoints.
+
+## Resource Information
+
+| Property | Value |
+|----------|-------|
+| Method and URI | `DELETE https://developer.api.autodesk.com/photo-to-3d/v1/photoscene/:photosceneid` |
+| Authentication Context | App only / User context required |
+| Required OAuth Scopes | `data:write`, `data:read` |
+| Data Format | JSON |
+
+## Request
+
+### Headers
+
+| Name | Required | Type | Description |
+|------|----------|------|-------------|
+| Authorization | Yes | string | Must be `Bearer <token>`, where `<token>` is obtained via OAuth |
+| Content-Type | Yes | string | Must be `application/json` |
+
+### URI Parameters
+
+| Name | Required | Type | Description |
+|------|----------|------|-------------|
+| photosceneid | Yes | string | Specifies the ID of the photoscene to delete |
+
+### Query String Parameters
+
+| Name | Required | Type | Description |
+|------|----------|------|-------------|
+| client_id | Yes | string | Client ID of the app |
+| response_type | Yes | string | Must be either `code` or `token` |
+| redirect_uri | Yes | string | URL-encoded callback URL |
+| scope | No | string | URL-encoded, space-separated list of requested scopes |
+| state | No | string | URL-encoded payload for the callback |
+
+## Response
+
+### HTTP Status Codes
+
+| Code | Message | Meaning |
+|------|---------|---------|
+| 200 | OK | Specified action was successfully completed |
+| 400 | BAD REQUEST | The request was invalid |
+| 401 | UNAUTHORIZED | The access token is invalid |
+| 403 | FORBIDDEN | The request was refused |
+| 415 | UNSUPPORTED MEDIA TYPE | Invalid Content-Type header |
+| 429 | TOO MANY REQUESTS | Rate limit exceeded |
+| 500 | INTERNAL SERVER ERROR | An unexpected condition was encountered |
+
+### Body Structure (200)
+
+| Name | Type | Description |
+|------|------|-------------|
+| photoscene | object | JSON object containing details of deleted assets |
+| photoscene.deleted | int | The number of assets that were deleted |
+
+### Body Structure (400)
+
+| Name | Type | Description |
+|------|------|-------------|
+| error | object | JSON object containing error details |
+| error.code | int | A code that identifies the error type |
+| error.msg | string | A short, human readable explanation |
+
+<Note>
+See [Error Handling](/developers-guide/error-handling) for a full list of errors returned by this service.
+</Note>
+
+## Example 1: Successful Delete
+
+**Request:**
+
+```bash
+curl -v 'https://developer.api.autodesk.com/photo-to-3d/v1/photoscene/AtAuFsedTdqWdhF9VzHepp5oM9PITiuizI4xdMbz' \
+  -X 'DELETE' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer eyjhbGCIOIjIuzI1NiISimtpZCI6...'
+```
+
+**Response:**
+
+```json
+{
+  "photoscene": {
+    "deleted": "7"
+  }
+}
+```
+
+## Example 2: Non-existent Photoscene
+
+**Request:**
+
+```bash
+curl -v 'https://developer.api.autodesk.com/photo-to-3d/v1/photoscene/BtAuFsedTdqWdhF9VzHepp5oM9PITiuizI4xdMbz' \
+  -X 'DELETE' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer eyjhbGCIOIjIuzI1NiISimtpZCI6...'
+```
+
+**Response:**
+
+```json
+{
+  "error": {
+    "code": "19",
+    "msg": "Specified photoscene ID doesn't exist in the database"
+  }
+}
+```
+

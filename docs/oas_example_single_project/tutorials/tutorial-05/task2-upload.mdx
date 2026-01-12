@@ -1,0 +1,150 @@
+---
+title: "Task 2 – Upload Source File to OSS"
+description: "Upload a model file to Object Storage Service"
+---
+
+The Object Storage Service (OSS) is a generic Cloud Storage Service that is part of the Data Management API. In this task, you upload a Revit model to OSS.
+
+<Tip>
+While you can use any model, for this tutorial we recommend that you use the Revit model we provide (*rac_basic_sample_project.rvt*). You can get this file from the *tutorial_data* folder of the GitHub repository containing the Postman Collection for this tutorial.
+</Tip>
+
+## Key Learnings
+
+By the end of this task you will be able to:
+
+- Create a Bucket to store files
+- Obtain a signed URL to upload a file to the bucket
+- Upload a file to the Bucket
+- Obtain the URN of the uploaded file
+- Convert the URN to a Base64-encoded URN
+
+## Endpoints Used
+
+| Operation | HTTP Request | Description |
+|-----------|--------------|-------------|
+| **Create a Bucket** | `POST /buckets` | Creates a new OSS Bucket |
+| **Get a Signed Upload URL** | `GET /buckets/:bucketKey/objects/:objectKey/signeds3upload` | Requests an S3 signed URL to upload an object |
+| **Finalize Upload** | `POST /buckets/:bucketKey/objects/:objectKey/signeds3upload` | Instructs OSS that all data has been uploaded |
+
+## Step 1 - Create a Bucket
+
+Create a Bucket to hold the Revit model. Once a Bucket is created, you can store files in it as Objects.
+
+**Request:**
+
+```bash
+curl -X POST \
+    'https://developer.api.autodesk.com/oss/v2/buckets' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "bucketKey": "<YOUR_BUCKET_KEY>",
+        "access": "full",
+        "policyKey": "transient"
+    }'
+```
+
+<Note>
+- Bucket keys can only be made up of lower case characters, numbers 0-9, and the underscore (_) character.
+- The Bucket key must be unique throughout all of the OSS service. If already in use, the server returns a `409 Conflict` error.
+</Note>
+
+**Response:**
+
+```json
+{
+    "bucketKey": "<YOUR_BUCKET_KEY>",
+    "bucketOwner": "<YOUR_FORGE_APP_CLIENT_ID>",
+    "createdDate": 1571296694595,
+    "permissions": [
+        {
+            "authId": "T05H372IE11Kmkksdh73ndj0qie2f6nib",
+            "access": "full"
+        }
+    ],
+    "policyKey": "transient"
+}
+```
+
+## Step 2 - Obtain Signed URL
+
+To upload a file to an OSS bucket, you need a signed upload URL.
+
+**Request:**
+
+```bash
+curl -X GET \
+    'https://developer.api.autodesk.com/oss/v2/buckets/<YOUR_BUCKET_KEY>/objects/<YOUR_OBJECT_KEY>/signeds3upload?minutesExpiration=10' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>' \
+    -H 'Content-Type: application/json'
+```
+
+**Response:**
+
+```json
+{
+    "uploadKey": "<YOUR_UPLOAD_KEY>",
+    "uploadExpiration": "2022-04-08T00:00:00Z",
+    "urlExpiration": "2022-04-06T17:59:46Z",
+    "urls": ["<SIGNED_UPLOAD_URL>"],
+    "location": "https://developer.api.autodesk.com/oss/v2/buckets/<YOUR_BUCKET_KEY>/objects/<YOUR_OBJECT_KEY>"
+}
+```
+
+Note the `uploadKey` and `urls` values for subsequent requests.
+
+## Step 3 - Upload the File
+
+1. Download the file *rac_basic_sample_project.rvt* from the [GitHub repository](https://github.com/Autodesk-Forge/forge-model-derivative-tutorial-postman/tree/master/tutorial_data).
+
+2. Upload the file:
+
+```bash
+curl -X PUT \
+    '<SIGNED_UPLOAD_URL>' \
+    --data-binary '@<PATH_TO_YOUR_FILE_TO_UPLOAD>'
+```
+
+## Step 4 - Finalize Upload
+
+To make the uploaded file available for download, you must finalize the upload.
+
+**Request:**
+
+```bash
+curl -X POST \
+    'https://developer.api.autodesk.com/oss/v2/buckets/<YOUR_BUCKET_KEY>/objects/<YOUR_OBJECT_KEY>/signeds3upload' \
+    -H 'Authorization: Bearer <YOUR_ACCESS_TOKEN>' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "uploadKey": "<YOUR_UPLOAD_KEY>"
+    }'
+```
+
+**Response:**
+
+```json
+{
+    "bucketKey": "<YOUR_BUCKET_KEY>",
+    "objectId": "<YOUR_OBJECT_ID>",
+    "objectKey": "<YOUR_OBJECT_KEY>",
+    "size": "17813504",
+    "contentType": "application/octet-stream"
+}
+```
+
+## Step 5 - Convert URN to Base64
+
+Most Model Derivative requests require the URN to be Base64-encoded.
+
+| Format | Example |
+|--------|---------|
+| raw | `urn:adsk.objects:os.object:md_tute_01/Tuner.zip` |
+| Base64 | `dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bWRfdHV0ZV8wMS9UdW5lci56aXA=` |
+| URL-safe Base64 (no padding) | `dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bWRfdHV0ZV8wMS9UdW5lci56aXA` |
+
+<Tip>
+We recommend using the unpadded option (RFC 6920), since it uses URL-safe characters.
+</Tip>
+

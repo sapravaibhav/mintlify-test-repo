@@ -1,0 +1,45 @@
+---
+title: "APS Rate Limits and Quotas"
+description: "Understanding Autodesk Platform Services rate limits and quotas"
+---
+
+The Autodesk Platform Services (APS) observes rate limits and quotas to ensure that all clients get sufficient service and that runaway applications don't consume excessive resources.
+
+## What are Rate Limits?
+
+Rate limits specify a maximum number of requests per minute that an application can make to the API. When you exceed a rate limit, the server returns an `HTTP 429` error response.
+
+## What are Quotas?
+
+Quotas limit the total amount of resources an application can consume over a period of time. This includes:
+
+- Storage space
+- Number of API calls per day/month
+- Data transfer limits
+
+## Handling Rate Limit Errors
+
+When you exceed the rate limit, implement the following best practices:
+
+<Steps>
+  <Step title="Implement Exponential Backoff">
+    Wait progressively longer periods between retry attempts.
+  </Step>
+  <Step title="Check Response Headers">
+    Look for `Retry-After` headers that indicate when you can retry.
+  </Step>
+  <Step title="Queue Requests">
+    Implement a request queue to space out API calls.
+  </Step>
+</Steps>
+
+<Warning>
+If your application consistently exceeds rate limits, consider optimizing your API usage patterns or contacting Autodesk for higher limits.
+</Warning>
+
+## Related Topics
+
+<Card title="Model Derivative Rate Limits" icon="gauge" href="/developers-guide/md-rate-limits">
+  Learn about specific rate limits for the Model Derivative API.
+</Card>
+

@@ -1,0 +1,124 @@
+---
+title: "Prepare Models for Online Viewing"
+description: "Translate models to SVF and SVF2 formats for web viewing"
+---
+
+The Forge recommended way of viewing a model online is to display the model using the Forge Viewer Library. The Forge Viewer Library is a WebGL-based JavaScript SDK that can render 2D and 3D models in a browser. However, before you can display a model with the viewer, you must translate the model to a viewer-friendly format. The viewer currently supports two formats; SVF (Streaming Viewing Format) and its newer incarnation, SVF2. You can use the Model Derivative API to translate more than 70 model formats to SVF and SVF2. Statistics show that translating to SVF/SVF2 is the most common use of the Model Derivative API.
+
+## What is SVF?
+
+SVF is a vector graphics format designed for the web. It is the native file format of the viewer. SVF contains all the design information the viewer needs to display graphics, list the hierarchy of objects, override the visibility of objects, and display the properties of each object. Since it is a streaming format, it is the format of choice for online viewing for most models.
+
+## What is SVF2?
+
+SVF2 is a vector graphics format like SVF, specifically designed to reduce the storage size of 3D Viewables generated from models containing repetitive geometry shapes. Large models typically produced by the AEC (Architecture, Engineering & Construction) industry fall into this category.
+
+SVF2 is an extension of the SVF format. So, if the Viewer is unable to load an SVF2 derivative, it can fall back to loading the equivalent SVF. The main difference between the two formats is the optimized 3D Viewable, which has a greatly reduced storage size. This optimization enables incremental loading and improved interactivity like zooming and exploding. Large models that intermittently fail to load when translated to SVF can be reliably displayed with SVF2.
+
+Because SVF2 is an extension of SVF, all post translation operations possible with SVF are possible with SVF2. Even the process of extracting metadata and geometry is the same for both formats. However, because of the extra processing required for optimization, the time taken to translate to SVF2 can be greater than the time taken to translate to SVF.
+
+## SVF or SVF2?
+
+The decision to use SVF or SVF2 is yours:
+
+| Use Case | Recommendation |
+|----------|----------------|
+| Large models with repetitive shapes (AEC industry) | **SVF2** |
+| Models already translated to SVF performing well | No need to switch to SVF2 |
+| New model translations from Revit/Navisworks | **SVF2** recommended |
+| Models without repetitive shapes | SVF is sufficient |
+
+<Tip>
+Consider the occurrence of repetitive shapes (or the lack of it) when deciding between SVF and SVF2.
+</Tip>
+
+## Differences in Manifests
+
+In the manifest, SVF2 derivatives do not have a URN. So, SVF2 derivatives cannot be downloaded.
+
+When you translate a model to SVF2, and it already has an SVF derivative, the server does not add SVF2 as another derivative to the manifest. Instead, the server extends the existing derivative by adding a new parameter, `"overrideOutputType":"svf2"`, to the existing SVF derivative.
+
+### Example 1: SVF Only
+
+```json
+{
+    "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bWRfMjAxMDEwL2JveC5pcHQ",
+    "derivatives": [
+        {
+            "hasThumbnail": "true",
+            "children": [
+                {
+                    "guid": "614c6459-f9a4-4dcf-a264-cee70f958efe",
+                    "type": "geometry",
+                    "role": "3d",
+                    "name": "Scene",
+                    "status": "success"
+                }
+            ],
+            "name": "box.ipt",
+            "progress": "complete",
+            "outputType": "svf",
+            "status": "success"
+        }
+    ],
+    "status": "success"
+}
+```
+
+### Example 2: SVF2 Only
+
+```json
+{
+    "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bWRfMjAxMDEwL2JveC5pcHQ",
+    "derivatives": [
+        {
+            "hasThumbnail": "true",
+            "children": [
+                {
+                    "role": "3d",
+                    "name": "Scene",
+                    "status": "success"
+                }
+            ],
+            "name": "box.ipt",
+            "progress": "complete",
+            "outputType": "svf2",
+            "status": "success"
+        }
+    ],
+    "status": "success"
+}
+```
+
+### Example 3: SVF Later Translated to SVF2
+
+```json
+{
+    "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bWRfMjAxMDEwL2JveC5pcHQ",
+    "derivatives": [
+        {
+            "hasThumbnail": "true",
+            "overrideOutputType": "svf2",
+            "children": [
+                {
+                    "guid": "614c6459-f9a4-4dcf-a264-cee70f958efe",
+                    "type": "geometry",
+                    "role": "3d",
+                    "name": "Scene",
+                    "status": "success"
+                }
+            ],
+            "name": "box.ipt",
+            "progress": "complete",
+            "outputType": "svf",
+            "status": "success"
+        }
+    ],
+    "status": "success"
+}
+```
+
+<Note>
+Note the `overrideOutputType: "svf2"` parameter added to the existing SVF derivative.
+</Note>
+
