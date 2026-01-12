@@ -1,0 +1,123 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "OAS Example Single Project API",
+  "colors": {
+    "primary": "#0066CC",
+    "light": "#3399FF",
+    "dark": "#004C99"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Developer's Guide",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index",
+              "developers-guide/overview"
+            ]
+          },
+          {
+            "group": "API Basics",
+            "pages": [
+              "developers-guide/basics",
+              "developers-guide/translation",
+              "developers-guide/prepare-viewing",
+              "developers-guide/metadata-extraction",
+              "developers-guide/geometry-extraction",
+              "developers-guide/thumbnail-generation"
+            ]
+          },
+          {
+            "group": "Error Handling & Limits",
+            "pages": [
+              "developers-guide/error-handling",
+              "developers-guide/aps-rate-limits",
+              "developers-guide/md-rate-limits"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "developers-guide/webhooks"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Tutorials",
+        "groups": [
+          {
+            "group": "Step-by-Step Tutorials",
+            "pages": [
+              "tutorials/tutorial-template"
+            ]
+          },
+          {
+            "group": "Extract Metadata Tutorial",
+            "pages": [
+              "tutorials/tutorial-05/about-this-tutorial",
+              "tutorials/tutorial-05/task1-authenticate",
+              "tutorials/tutorial-05/task2-upload",
+              "tutorials/tutorial-05/task3-translate",
+              "tutorials/tutorial-05/task4-metadata"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Code Samples",
+        "groups": [
+          {
+            "group": "Resources",
+            "pages": [
+              "code-samples/code-samples",
+              "code-samples/blog-posts"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "HTTP Reference",
+            "pages": [
+              "reference/quick-reference",
+              "reference/endpoint-template"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Changelog",
+          "href": "/changelog",
+          "icon": "clock-rotate-left"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Supports",
+        "href": "mailto:forge-sunshine-squad@autodesk.com"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/Autodesk-Forge"
+    }
+  }
+}
